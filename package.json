@@ -1,0 +1,15 @@
+{
+  "name": "repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env .",
+    "start:watch": "node --env-file=.env --watch .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "pauloo27",
+  "license": "MIT"
+}
