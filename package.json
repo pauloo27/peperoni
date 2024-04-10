@@ -11,5 +11,8 @@
   },
   "keywords": [],
   "author": "pauloo27",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "prettier": "^3.2.5"
+  }
 }
