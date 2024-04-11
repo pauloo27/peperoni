@@ -1,6 +1,8 @@
 import { Sequelize } from "sequelize";
 import { defineUser } from "../entities/user.js";
 
+export let db = undefined;
+
 export async function connectToDatabase() {
   const database = process.env.DB_DATABASE ?? "database";
   const username = process.env.DB_USERNAME ?? "username";
@@ -9,7 +11,7 @@ export async function connectToDatabase() {
   const dialect = process.env.DB_DIALECT ?? "mysql";
   console.log("Connecting to database...");
 
-  const db = new Sequelize(database, username, password, {
+  db = new Sequelize(database, username, password, {
     host,
     dialect,
   });
@@ -22,5 +24,5 @@ export async function connectToDatabase() {
 export async function migrateDatabase(db) {
   defineUser(db);
 
-  await db.sync({ force: true });
+  await db.sync();
 }

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=.env .",
-    "start:watch": "node --env-file=.env --watch .",
+    "start:watch": "nodemon --env-file=.env .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,10 +14,13 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
     "mysql2": "^3.9.4",
-    "sequelize": "^6.37.2"
+    "sequelize": "^6.37.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "nodemon": "^3.1.0",
     "prettier": "^3.2.5"
   }
 }
