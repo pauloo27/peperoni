@@ -40,6 +40,21 @@ const SelfUpdateUserSchema = z.object({
     .optional(),
 });
 
+const UpdateOtherUserSchema = z.object({
+  fullName: z
+    .string()
+    .min(3, "O nome não pode ser menor que 3")
+    .max(32, "O nome não pode ser maior que 32")
+    .optional(),
+  newPassword: z
+    .string()
+    .min(8, "A senha deve conter ao menos 8 caracteres")
+    .max(32, "A senha não pode ser maior que 32")
+    .regex(/\d+/, "A senha deve conter ao menos um número")
+    .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra")
+    .optional(),
+});
+
 const UserLoginSchema = z.object({
   email: z.string().email("O e-mail deve ser valido"),
   password: z
@@ -98,6 +113,38 @@ export async function deleteUser(req, res) {
   }
 
   res.status(200).send({ message: "Usuário deletado com sucesso" });
+}
+
+export async function updateOtherUser(req, res) {
+  const UserModel = db.models.User;
+  const id = req.params.id;
+  const data = req.body;
+  const updateUser = UpdateOtherUserSchema.parse(data);
+  const salt = process.env.PASSWORD_HASH_SALT;
+
+  if ((await UserModel.count({ where: { id } })) === 0) {
+    return res.status(404).json({ message: "Usuário não encontrado" });
+  }
+
+  if (updateUser.fullName) {
+    await UserModel.update(
+      { fullName: updateUser.fullName },
+      { where: { id } },
+    );
+  }
+
+  if (updateUser.newPassword) {
+    const hashedPassword = createHash(passwordHashAlgorithm)
+      .update(`${salt}${updateUser.newPassword}`)
+      .digest("hex");
+
+    await UserModel.update(
+      { hashedPassword, passwordHashAlgorithm },
+      { where: { id } },
+    );
+  }
+
+  res.status(200).json({ message: "Usuário atualizado com sucesso" });
 }
 
 export async function login(req, res) {
