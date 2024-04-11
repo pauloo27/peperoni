@@ -22,5 +22,10 @@ export function defineUser(sequelize) {
       unique: false,
       allowNull: false,
     },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   });
 }

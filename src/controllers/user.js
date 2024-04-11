@@ -31,11 +31,14 @@ export async function createUser(req, res) {
     .update(`${salt}${createUser.password}`)
     .digest("hex");
 
+  const isFirstUser = (await UserModel.count()) === 0;
+
   await UserModel.create({
     email: createUser.email,
     fullName: createUser.fullName,
     hashedPassword,
     passwordHashAlgorithm,
+    isAdmin: isFirstUser,
   }).catch(handleUniqueConstraintError("E-mail já cadastrado"));
 
   res.status(201).json({ message: "Usuário criado com sucesso" });
