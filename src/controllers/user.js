@@ -87,6 +87,19 @@ export async function listUsers(req, res) {
   );
 }
 
+export async function deleteUser(req, res) {
+  const UserModel = db.models.User;
+  const id = req.params.id;
+
+  const updated = await UserModel.destroy({ where: { id } });
+  if (updated === 0) {
+    res.status(404).json({ message: "Usuário não encontrado" });
+    return;
+  }
+
+  res.status(200).send({ message: "Usuário deletado com sucesso" });
+}
+
 export async function login(req, res) {
   const UserModel = db.models.User;
   const data = req.body;

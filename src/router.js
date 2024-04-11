@@ -1,6 +1,7 @@
 import { health } from "./controllers/health.js";
 import {
   createUser,
+  deleteUser,
   listUsers,
   login,
   selfUpdateUser,
@@ -19,6 +20,7 @@ export function route(app) {
   app.use(mustBeAdmin);
   app.get("/users", listUsers);
   app.post("/users", createUser);
+  app.delete("/users/:id", deleteUser);
 
   app.use(handleError);
 }
