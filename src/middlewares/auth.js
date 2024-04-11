@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { HttpError } from "../core/http_error.js";
 
-export function checkToken(req, res, next) {
+export function mustBeAuthed(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -20,4 +20,12 @@ export function checkToken(req, res, next) {
     req.user = decoded;
     next();
   });
+}
+
+export function mustBeAdmin(req, res, next) {
+  if (!req.user.isAdmin) {
+    throw new HttpError(403, "Auth error", "Usuário não é administrador");
+  }
+
+  next();
 }

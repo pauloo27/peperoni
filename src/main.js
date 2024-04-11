@@ -2,11 +2,13 @@ import express from "express";
 import "express-async-errors";
 import { route } from "./router.js";
 import { connectToDatabase, migrateDatabase } from "./services/db.js";
+import { ensureAdminExists } from "./init.js";
 
 async function main() {
   const httpPort = process.env.HTTP_PORT ?? "8080";
   const db = await connectToDatabase();
   await migrateDatabase(db);
+  await ensureAdminExists(db);
 
   const app = express();
 

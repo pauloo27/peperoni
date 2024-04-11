@@ -22,9 +22,10 @@ const CreateUserSchema = z.object({
     .max(32, "A senha não pode ser maior que 32")
     .regex(/\d+/, "A senha deve conter ao menos um número")
     .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra"),
+  isAdmin: z.boolean().default(false),
 });
 
-const UpdateUserSchema = z.object({
+const SelfUpdateUserSchema = z.object({
   fullName: z
     .string()
     .min(3, "O nome não pode ser menor que 3")
@@ -59,14 +60,12 @@ export async function createUser(req, res) {
     .update(`${salt}${createUser.password}`)
     .digest("hex");
 
-  const isFirstUser = (await UserModel.count()) === 0;
-
   await UserModel.create({
     email: createUser.email,
     fullName: createUser.fullName,
     hashedPassword,
     passwordHashAlgorithm,
-    isAdmin: isFirstUser,
+    isAdmin: createUser.isAdmin,
   }).catch(handleUniqueConstraintError("E-mail já cadastrado"));
 
   res.status(201).json({ message: "Usuário criado com sucesso" });
@@ -105,10 +104,10 @@ export async function login(req, res) {
   res.status(200).json({ accessToken, expiresIn: expiresInSeconds });
 }
 
-export async function updateUser(req, res) {
+export async function selfUpdateUser(req, res) {
   const UserModel = db.models.User;
   const data = req.body;
-  const updateUser = UpdateUserSchema.parse(data);
+  const updateUser = SelfUpdateUserSchema.parse(data);
   const salt = process.env.PASSWORD_HASH_SALT;
   const user = req.user;
 

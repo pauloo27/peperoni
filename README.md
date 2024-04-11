@@ -17,7 +17,9 @@ junto com o código. Ele possui tanto as dependências do backend quanto o MySQL
 
 Para usa-lo, siga os seguintes passos:
 
-- Copie o `.env.example` para `.env` e substitua os projetos.
+- Copie o `.env.example` para `.env` e preencha as variáveis devidamente, como
+os secrets do JWT, salt da senha e dados do usuário Admin. Quanto as 
+informações do banco de dados, é recomendado alterar apenas a senha.
 - Execute `docker compose build` para construir a imagem do backend.
 - Inicie os serviços com `docker compose up -d`. Caso precise ver as _logs_ do
 backend, use `docker compose logs backend`.
@@ -27,10 +29,13 @@ backend, use `docker compose logs backend`.
 Com o **Node.js 20** e um **Banco de Dados MySQL** instalado, 
 siga os seguintes passos:
 
-- Copie o `.env.example` para `.env` e preencha as variáveis devidamente.
+- Copie o `.env.example` para `.env` e preencha as variáveis devidamente, desde
+os dados de acesso ao banco de dados até os secrets do JWT, salt da senha e 
+dados do usuário Admin.
 - Use algum gerenciador de pacotes para instalar as dependências, recomendo o 
 [pnpm](https://pnpm.io/pt/) com `pnpm install` ou `npm install`.
-- Inicie o backend com `node .`.
+- Inicie o backend com `node .`. Isso irá criar as tabelas e o usuário Admin
+de acorod com o que foi colocado no arquivo `.env`.
 
 ## Mamma Mia
 
