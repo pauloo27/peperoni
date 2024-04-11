@@ -1,69 +1,16 @@
-import { z } from "zod";
 import { db } from "../services/db.js";
 import { createHash } from "crypto";
 import { handleUniqueConstraintError } from "../core/db_errors.js";
 import jwt from "jsonwebtoken";
+import {
+  CreateUserSchema,
+  SelfUpdateUserSchema,
+  UpdateOtherUserSchema,
+  UserLoginSchema,
+} from "../schemas/user.js";
 
 const passwordHashAlgorithm = "sha256";
 const expiresInSeconds = 60 * 60;
-
-const CreateUserSchema = z.object({
-  fullName: z
-    .string()
-    .min(3, "O nome não pode ser menor que 3")
-    .max(32, "O nome não pode ser maior que 32"),
-  email: z
-    .string()
-    .email("O e-mail deve ser valido")
-    .max(64, "O e-mail não pode ser maior que 64"),
-  password: z
-    .string()
-    .min(8, "A senha deve conter ao menos 8 caracteres")
-    .max(32, "A senha não pode ser maior que 32")
-    .regex(/\d+/, "A senha deve conter ao menos um número")
-    .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra"),
-  isAdmin: z.boolean().default(false),
-});
-
-const SelfUpdateUserSchema = z.object({
-  fullName: z
-    .string()
-    .min(3, "O nome não pode ser menor que 3")
-    .max(32, "O nome não pode ser maior que 32")
-    .optional(),
-  newPassword: z
-    .string()
-    .min(8, "A senha deve conter ao menos 8 caracteres")
-    .max(32, "A senha não pode ser maior que 32")
-    .regex(/\d+/, "A senha deve conter ao menos um número")
-    .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra")
-    .optional(),
-});
-
-const UpdateOtherUserSchema = z.object({
-  fullName: z
-    .string()
-    .min(3, "O nome não pode ser menor que 3")
-    .max(32, "O nome não pode ser maior que 32")
-    .optional(),
-  newPassword: z
-    .string()
-    .min(8, "A senha deve conter ao menos 8 caracteres")
-    .max(32, "A senha não pode ser maior que 32")
-    .regex(/\d+/, "A senha deve conter ao menos um número")
-    .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra")
-    .optional(),
-});
-
-const UserLoginSchema = z.object({
-  email: z.string().email("O e-mail deve ser valido"),
-  password: z
-    .string()
-    .min(8, "A senha deve conter ao menos 8 caracteres")
-    .max(32, "A senha não pode ser maior que 32")
-    .regex(/\d+/, "A senha deve conter ao menos um número")
-    .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra"),
-});
 
 export async function createUser(req, res) {
   const UserModel = db.models.User;
@@ -86,7 +33,7 @@ export async function createUser(req, res) {
   res.status(201).json({ message: "Usuário criado com sucesso" });
 }
 
-export async function listUsers(req, res) {
+export async function listUsers(_req, res) {
   const UserModel = db.models.User;
   res.send(
     await UserModel.findAll({

@@ -1,4 +1,4 @@
-import { health } from "./controllers/health.js";
+import { health } from "../controllers/health.js";
 import {
   createUser,
   deleteUser,
@@ -6,9 +6,9 @@ import {
   login,
   selfUpdateUser,
   updateOtherUser,
-} from "./controllers/user.js";
-import { mustBeAuthed, mustBeAdmin } from "./middlewares/auth.js";
-import { handleError } from "./middlewares/error.js";
+} from "../controllers/user.js";
+import { mustBeAuthed, mustBeAdmin } from "../middlewares/auth.js";
+import { handleError } from "../middlewares/error.js";
 
 export function route(app) {
   app.get("/healthz", health);
