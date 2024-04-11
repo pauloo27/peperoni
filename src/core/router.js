@@ -1,4 +1,4 @@
-import { health } from "../controllers/health.js";
+import { health } from "../api/health/health_controller.js";
 import {
   createUser,
   deleteUser,
@@ -6,7 +6,7 @@ import {
   login,
   selfUpdateUser,
   updateOtherUser,
-} from "../controllers/user.js";
+} from "../api/user/user_controller.js";
 import { mustBeAuthed, mustBeAdmin } from "../middlewares/auth.js";
 import { handleError } from "../middlewares/error.js";
 

@@ -1,13 +1,14 @@
-import { db } from "../services/db.js";
+import { db } from "../../integrations/db.js";
 import { createHash } from "crypto";
-import { handleUniqueConstraintError } from "../core/db_errors.js";
+import { handleUniqueConstraintError } from "../../core/db_errors.js";
 import jwt from "jsonwebtoken";
 import {
   CreateUserSchema,
   SelfUpdateUserSchema,
   UpdateOtherUserSchema,
   UserLoginSchema,
-} from "../schemas/user.js";
+} from "./user_schema.js";
+import { doUpdate } from "./user_helper.js";
 
 const passwordHashAlgorithm = "sha256";
 const expiresInSeconds = 60 * 60;
@@ -67,29 +68,12 @@ export async function updateOtherUser(req, res) {
   const id = req.params.id;
   const data = req.body;
   const updateUser = UpdateOtherUserSchema.parse(data);
-  const salt = process.env.PASSWORD_HASH_SALT;
 
   if ((await UserModel.count({ where: { id } })) === 0) {
     return res.status(404).json({ message: "Usuário não encontrado" });
   }
 
-  if (updateUser.fullName) {
-    await UserModel.update(
-      { fullName: updateUser.fullName },
-      { where: { id } },
-    );
-  }
-
-  if (updateUser.newPassword) {
-    const hashedPassword = createHash(passwordHashAlgorithm)
-      .update(`${salt}${updateUser.newPassword}`)
-      .digest("hex");
-
-    await UserModel.update(
-      { hashedPassword, passwordHashAlgorithm },
-      { where: { id } },
-    );
-  }
+  await doUpdate(updateUser, id);
 
   res.status(200).json({ message: "Usuário atualizado com sucesso" });
 }
@@ -128,29 +112,11 @@ export async function login(req, res) {
 }
 
 export async function selfUpdateUser(req, res) {
-  const UserModel = db.models.User;
   const data = req.body;
   const updateUser = SelfUpdateUserSchema.parse(data);
-  const salt = process.env.PASSWORD_HASH_SALT;
-  const user = req.user;
+  const id = req.user.id;
 
-  if (updateUser.fullName) {
-    await UserModel.update(
-      { fullName: updateUser.fullName },
-      { where: { email: user.email } },
-    );
-  }
-
-  if (updateUser.newPassword) {
-    const hashedPassword = createHash(passwordHashAlgorithm)
-      .update(`${salt}${updateUser.newPassword}`)
-      .digest("hex");
-
-    await UserModel.update(
-      { hashedPassword, passwordHashAlgorithm },
-      { where: { email: user.email } },
-    );
-  }
+  await doUpdate(updateUser, id);
 
   res.status(200).json({ message: "Usuário atualizado com sucesso" });
 }

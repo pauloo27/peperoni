@@ -1,7 +1,7 @@
 import express from "express";
 import "express-async-errors";
 import { route } from "./core/router.js";
-import { connectToDatabase, migrateDatabase } from "./services/db.js";
+import { connectToDatabase, migrateDatabase } from "./integrations/db.js";
 import { ensureAdminExists } from "./init.js";
 
 async function main() {
