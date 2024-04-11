@@ -1,5 +1,5 @@
+import { health } from "./controllers/health.js";
+
 export function route(app) {
-  app.get("/", (req, res) => {
-    res.send("Hello World!");
-  });
+  app.get("/healthz", health);
 }
