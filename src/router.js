@@ -1,6 +1,11 @@
 import { health } from "./controllers/health.js";
-import { createUser, login, selfUpdateUser } from "./controllers/user.js";
-import { mustBeAdmin, mustBeAuthed } from "./middlewares/auth.js";
+import {
+  createUser,
+  listUsers,
+  login,
+  selfUpdateUser,
+} from "./controllers/user.js";
+import { mustBeAuthed, mustBeAdmin } from "./middlewares/auth.js";
 import { handleError } from "./middlewares/error.js";
 
 export function route(app) {
@@ -12,6 +17,7 @@ export function route(app) {
   app.patch("/users", selfUpdateUser);
 
   app.use(mustBeAdmin);
+  app.get("/users", listUsers);
   app.post("/users", createUser);
 
   app.use(handleError);
