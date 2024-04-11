@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize";
+import { defineUser } from "../entities/user.js";
 
 export async function connectToDatabase() {
   const database = process.env.DB_DATABASE ?? "database";
@@ -14,4 +15,12 @@ export async function connectToDatabase() {
   });
 
   await db.authenticate();
+
+  return db;
+}
+
+export async function migrateDatabase(db) {
+  defineUser(db);
+
+  await db.sync({ force: true });
 }
