@@ -2,7 +2,6 @@ import express from "express";
 import "express-async-errors";
 import { route } from "./router.js";
 import { connectToDatabase, migrateDatabase } from "./services/db.js";
-import { handleError } from "./middlewares/error.js";
 
 async function main() {
   const httpPort = process.env.HTTP_PORT ?? "8080";
@@ -14,8 +13,6 @@ async function main() {
   app.use(express.json());
 
   route(app);
-
-  app.use(handleError);
 
   process.on("unhandledRejection", (err) => {
     console.error(err);

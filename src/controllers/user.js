@@ -24,6 +24,21 @@ const CreateUserSchema = z.object({
     .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra"),
 });
 
+const UpdateUserSchema = z.object({
+  fullName: z
+    .string()
+    .min(3, "O nome não pode ser menor que 3")
+    .max(32, "O nome não pode ser maior que 32")
+    .optional(),
+  newPassword: z
+    .string()
+    .min(8, "A senha deve conter ao menos 8 caracteres")
+    .max(32, "A senha não pode ser maior que 32")
+    .regex(/\d+/, "A senha deve conter ao menos um número")
+    .regex(/[A-Za-z]+/, "A senha deve conter ao menos uma letra")
+    .optional(),
+});
+
 const UserLoginSchema = z.object({
   email: z.string().email("O e-mail deve ser valido"),
   password: z
@@ -88,4 +103,32 @@ export async function login(req, res) {
   );
 
   res.status(200).json({ accessToken, expiresIn: expiresInSeconds });
+}
+
+export async function updateUser(req, res) {
+  const UserModel = db.models.User;
+  const data = req.body;
+  const updateUser = UpdateUserSchema.parse(data);
+  const salt = process.env.PASSWORD_HASH_SALT;
+  const user = req.user;
+
+  if (updateUser.fullName) {
+    await UserModel.update(
+      { fullName: updateUser.fullName },
+      { where: { email: user.email } },
+    );
+  }
+
+  if (updateUser.newPassword) {
+    const hashedPassword = createHash(passwordHashAlgorithm)
+      .update(`${salt}${updateUser.newPassword}`)
+      .digest("hex");
+
+    await UserModel.update(
+      { hashedPassword, passwordHashAlgorithm },
+      { where: { email: user.email } },
+    );
+  }
+
+  res.status(200).json({ message: "Usuário atualizado com sucesso" });
 }
