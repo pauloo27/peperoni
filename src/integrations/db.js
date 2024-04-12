@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import { defineUser } from "../entities/user.js";
 import { definePost } from "../entities/post.js";
+import { defineComment } from "../entities/comment.js";
 
 export let db = undefined;
 
@@ -25,6 +26,7 @@ export async function connectToDatabase() {
 export async function migrateDatabase(db) {
   defineUser(db);
   definePost(db);
+  defineComment(db);
 
   await db.sync();
 }

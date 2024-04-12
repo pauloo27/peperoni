@@ -29,3 +29,21 @@ export function mustBeAdmin(req, res, next) {
 
   next();
 }
+
+export function optionalAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    next();
+    return;
+  }
+
+  const jwtSecret = process.env.JWT_SECRET;
+
+  const token = authHeader.replace("Bearer ", "");
+
+  jwt.verify(token, jwtSecret, (err, decoded) => {
+    req.user = decoded;
+    next();
+  });
+}

@@ -15,3 +15,7 @@ export const CreatePostSchema = z.object({
     .max(256, "Os ingredientes não podem ser maiores que 256"),
   price: z.number().min(0, "O preço não pode ser negativo"),
 });
+
+export const CreateCommentSchema = z.object({
+  text: z.string().min(3, "O comentário não pode ser menor que 3"),
+});

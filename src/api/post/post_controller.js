@@ -1,5 +1,6 @@
 import { db } from "../../integrations/db.js";
-import { CreatePostSchema } from "./post_schema.js";
+import { CreatePostSchema, CreateCommentSchema } from "./post_schema.js";
+import { HttpError } from "../../core/http_error.js";
 
 export async function listPosts(req, res) {
   const maxPrice = req.query.maxPrice;
@@ -65,4 +66,43 @@ export async function createPost(req, res) {
   });
 
   res.status(201).json({ message: "Post created successfully" });
+}
+
+export async function createComment(req, res) {
+  const CommentModel = db.models.Comment;
+  const PostModel = db.models.Post;
+
+  const post = await PostModel.findByPk(req.params.id);
+  if (!post) {
+    throw new HttpError(404, "Post not found");
+  }
+
+  const comment = CreateCommentSchema.parse(req.body);
+
+  await CommentModel.create({
+    userId: req.user?.id,
+    postId: post.id,
+    text: comment.text,
+  });
+
+  res.status(201).json({ message: "Comment created successfully" });
+}
+
+export async function listPostComments(req, res) {
+  const postId = req.params.id;
+  const PostModel = db.models.Post;
+
+  const post = await PostModel.findByPk(postId);
+  if (!post) {
+    throw new HttpError(404, "Post not found");
+  }
+
+  const CommentModel = db.models.Comment;
+
+  const comments = await CommentModel.findAll({
+    where: { postId },
+    attributes: ["id", "userId", "createdAt", "text"],
+  });
+
+  return res.send(comments);
 }

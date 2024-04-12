@@ -1,5 +1,10 @@
 import { health } from "../api/health/health_controller.js";
-import { createPost, listPosts } from "../api/post/post_controller.js";
+import {
+  createComment,
+  createPost,
+  listPostComments,
+  listPosts,
+} from "../api/post/post_controller.js";
 import {
   createUser,
   deleteUser,
@@ -8,7 +13,11 @@ import {
   selfUpdateUser,
   updateOtherUser,
 } from "../api/user/user_controller.js";
-import { mustBeAuthed, mustBeAdmin } from "../middlewares/auth.js";
+import {
+  mustBeAuthed,
+  mustBeAdmin,
+  optionalAuth,
+} from "../middlewares/auth.js";
 import { handleError } from "../middlewares/error.js";
 import multer from "multer";
 
@@ -20,6 +29,9 @@ export function route(app) {
   app.post("/users/login", login);
 
   app.get("/posts", listPosts);
+  app.get("/posts/:id/comments", listPostComments);
+
+  app.post("/posts/:id/comments", optionalAuth, createComment);
 
   app.use(mustBeAuthed);
   app.patch("/users", selfUpdateUser);
