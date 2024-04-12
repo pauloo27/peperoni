@@ -7,6 +7,11 @@ export function definePost(sequelize) {
       allowNull: false,
       unique: false,
     },
+    likeCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
     userId: {
       type: DataTypes.INTEGER,
       unique: false,

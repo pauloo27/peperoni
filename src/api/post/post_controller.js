@@ -29,6 +29,7 @@ export async function listPosts(req, res) {
         "userId",
         "createdAt",
         "updatedAt",
+        "likeCount",
         "name",
         "description",
         "ingredients",
@@ -86,6 +87,20 @@ export async function createComment(req, res) {
   });
 
   res.status(201).json({ message: "Comment created successfully" });
+}
+
+export async function addPostLike(req, res) {
+  const postId = req.params.id;
+  const PostModel = db.models.Post;
+
+  const post = await PostModel.findByPk(postId);
+  if (!post) {
+    throw new HttpError(404, "Post not found");
+  }
+
+  await post.increment("likeCount");
+
+  res.status(200).json({ message: "Like added successfully" });
 }
 
 export async function listPostComments(req, res) {

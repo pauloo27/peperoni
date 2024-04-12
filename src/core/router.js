@@ -1,5 +1,6 @@
 import { health } from "../api/health/health_controller.js";
 import {
+  addPostLike,
   createComment,
   createPost,
   listPostComments,
@@ -30,6 +31,7 @@ export function route(app) {
 
   app.get("/posts", listPosts);
   app.get("/posts/:id/comments", listPostComments);
+  app.post("/posts/:id/like", addPostLike);
 
   app.post("/posts/:id/comments", optionalAuth, createComment);
 
