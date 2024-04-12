@@ -19,10 +19,11 @@ export function route(app) {
 
   app.post("/users/login", login);
 
+  app.get("/posts", listPosts);
+
   app.use(mustBeAuthed);
   app.patch("/users", selfUpdateUser);
 
-  app.get("/posts", listPosts);
   app.post("/posts", upload.single("image"), createPost);
 
   app.use(mustBeAdmin);
