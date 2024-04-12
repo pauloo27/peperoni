@@ -1,10 +1,28 @@
 import { db } from "../../integrations/db.js";
 import { CreatePostSchema } from "./post_schema.js";
 
-export async function listPosts(_req, res) {
+export async function listPosts(req, res) {
+  const maxPrice = req.query.maxPrice;
+  const ingredients = req.query.ingredients;
+
+  let where = {};
+
+  if (maxPrice) {
+    where.price = { [db.Sequelize.Op.lte]: maxPrice };
+  }
+
+  if (ingredients) {
+    ingredients.split(",").forEach((ingredient) => {
+      where.ingredients = {
+        [db.Sequelize.Op.like]: `%${ingredient}%`,
+      };
+    });
+  }
+
   const PostModel = db.models.Post;
   res.send(
     await PostModel.findAll({
+      where: where,
       attributes: [
         "id",
         "userId",
