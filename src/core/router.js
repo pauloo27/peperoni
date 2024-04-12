@@ -22,11 +22,13 @@ import {
 } from "../middlewares/auth.js";
 import { handleError } from "../middlewares/error.js";
 import multer from "multer";
+import express from "express";
 
 export function route(app) {
   const upload = multer({ dest: "./uploads" });
 
   app.get("/healthz", health);
+  app.use("/uploads", express.static("./uploads"));
 
   app.post("/users/login", login);
 
