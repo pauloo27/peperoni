@@ -1,3 +1,4 @@
 /node_modules
 /.env
-.ignoreme
+db_data/
+uploads/
