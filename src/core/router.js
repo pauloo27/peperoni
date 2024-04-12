@@ -9,6 +9,7 @@ import {
 import {
   createUser,
   deleteUser,
+  getUser,
   listUsers,
   login,
   selfUpdateUser,
@@ -32,6 +33,7 @@ export function route(app) {
   app.get("/posts", listPosts);
   app.get("/posts/:id/comments", listPostComments);
   app.post("/posts/:id/like", addPostLike);
+  app.get("/users/:id", getUser);
 
   app.post("/posts/:id/comments", optionalAuth, createComment);
 

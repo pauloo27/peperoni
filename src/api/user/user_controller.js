@@ -34,6 +34,25 @@ export async function createUser(req, res) {
   res.status(201).json({ message: "Usuário criado com sucesso" });
 }
 
+export async function getUser(req, res) {
+  const UserModel = db.models.User;
+  const id = req.params.id;
+
+  res.send(
+    await UserModel.findOne({
+      where: { id },
+      attributes: [
+        "id",
+        "createdAt",
+        "updatedAt",
+        "email",
+        "fullName",
+        "isAdmin",
+      ],
+    }),
+  );
+}
+
 export async function listUsers(_req, res) {
   const UserModel = db.models.User;
   res.send(
