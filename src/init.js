@@ -1,4 +1,5 @@
 import { createHash } from "crypto";
+import { passwordHashAlgorithm } from "./api/user/user_controller.js";
 
 export async function ensureAdminExists(db) {
   const UserModel = db.models.User;
@@ -10,7 +11,6 @@ export async function ensureAdminExists(db) {
     return;
   }
 
-  const passwordHashAlgorithm = "sha256";
   const salt = process.env.PASSWORD_HASH_SALT;
   const email = process.env.ADMIN_EMAIL;
   const fullName = process.env.ADMIN_FULL_NAME;

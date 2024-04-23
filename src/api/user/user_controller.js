@@ -10,7 +10,7 @@ import {
 } from "./user_schema.js";
 import { doUpdate } from "./user_helper.js";
 
-const passwordHashAlgorithm = "sha256";
+export const passwordHashAlgorithm = "sha256";
 const expiresInSeconds = 60 * 60;
 
 export async function createUser(req, res) {

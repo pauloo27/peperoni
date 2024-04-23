@@ -1,3 +1,7 @@
+import { db } from "../../integrations/db.js";
+import { passwordHashAlgorithm } from "./user_controller.js";
+import { createHash } from "crypto";
+
 export async function doUpdate(updateUser, id) {
   const UserModel = db.models.User;
   const salt = process.env.PASSWORD_HASH_SALT;
